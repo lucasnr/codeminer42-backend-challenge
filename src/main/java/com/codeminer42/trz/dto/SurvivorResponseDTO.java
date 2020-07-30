@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 
 @Data
 public class SurvivorResponseDTO extends SurvivorDTO {
-    private Set<InventoryEntryDetailedDTO> inventory;
+    private final Set<InventoryEntryDetailedDTO> inventory;
+    private final boolean infected;
 
     public SurvivorResponseDTO(Survivor survivor) {
         super(survivor);
@@ -17,5 +18,6 @@ public class SurvivorResponseDTO extends SurvivorDTO {
                 .stream()
                 .map(InventoryEntryDetailedDTO::new)
                 .collect(Collectors.toSet());
+        this.infected = survivor.isInfected();
     }
 }

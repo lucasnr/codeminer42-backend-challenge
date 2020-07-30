@@ -27,9 +27,20 @@ create table inventory_entry(
   
   primary key(survivor_id, item_id),
   foreign key(survivor_id) references survivor(id)
-    on delete cascade on update cascade,
+  	on delete cascade on update cascade,
   foreign key(item_id) references item(id)
-    on delete cascade on update cascade
+  	on delete cascade on update cascade
+);
+
+create table report(
+	reporter_id bigint not null,
+  reported_id bigint not null,
+
+  primary key(reporter_id, reported_id),
+  foreign key(reporter_id) references survivor(id)
+  	on delete cascade on update cascade,
+  foreign key(reported_id) references survivor(id)
+  	on delete cascade on update cascade
 );
 
 insert into item(name, points) values 

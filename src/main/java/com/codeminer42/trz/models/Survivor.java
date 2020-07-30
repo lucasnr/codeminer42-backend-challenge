@@ -1,6 +1,5 @@
 package com.codeminer42.trz.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,8 +28,6 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Survivor implements Serializable {
 
     @Id
@@ -52,6 +49,22 @@ public class Survivor implements Serializable {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "survivor_id", insertable = false, updatable = false)
     private Set<InventoryEntry> inventory = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "reported_id", insertable = false, updatable = false)
+    private Set<Report> reports = new HashSet<>();
+
+    @Builder
+    public Survivor(Long id, String name, Integer age, Gender gender, Double latitude, Double longitude, Set<InventoryEntry> inventory) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.inventory = inventory;
+        this.reports = new HashSet<>();
+    }
 
     public void addItem(Item item) {
         inventory.forEach(entry -> {
@@ -77,7 +90,7 @@ public class Survivor implements Serializable {
     }
 
     public boolean isInfected() {
-        return false;
+        return this.reports.size() >= 5;
     }
 
     public enum Gender {

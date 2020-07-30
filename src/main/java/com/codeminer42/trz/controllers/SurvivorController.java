@@ -1,8 +1,10 @@
 package com.codeminer42.trz.controllers;
 
 import com.codeminer42.trz.dto.LocationDTO;
+import com.codeminer42.trz.dto.ReportDTO;
 import com.codeminer42.trz.dto.SurvivorRequestDTO;
 import com.codeminer42.trz.dto.SurvivorResponseDTO;
+import com.codeminer42.trz.exceptions.BadRequestException;
 import com.codeminer42.trz.exceptions.NotFoundException;
 import com.codeminer42.trz.models.Survivor;
 import com.codeminer42.trz.services.SurvivorService;
@@ -60,5 +62,22 @@ public class SurvivorController {
         survivor.setLatitude(location.getLatitude());
         survivor.setLongitude(location.getLongitude());
         return ResponseEntity.ok(new SurvivorResponseDTO(survivor));
+    }
+
+    @PostMapping(path = "/{id}/report", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ResponseEntity<?> reportAsInfected(@PathVariable("id") Long id, @RequestBody @Valid ReportDTO report) {
+        if(id.equals(report.getReporterId()))
+            throw new BadRequestException("You cannot report yourself as infected");
+
+        if(! service.existsById(id))
+            throw new NotFoundException(String.format("No survivor was found with the id [%d]", id));
+
+        Long reporterId = report.getReporterId();
+        if(! service.existsById(reporterId))
+            throw new NotFoundException(String.format("No survivor was found with the id [%d]", reporterId));
+
+        service.reportAsInfected(id, reporterId);
+        return ResponseEntity.noContent().build();
     }
 }
