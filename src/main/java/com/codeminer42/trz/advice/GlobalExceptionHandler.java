@@ -1,5 +1,6 @@
 package com.codeminer42.trz.advice;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.core.Ordered;
@@ -16,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -55,8 +57,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        InvalidFormatException ex = (InvalidFormatException) e.getCause();
+        Map<String, Object> body = initBadRequestBody();
+        if (!(e.getCause() instanceof InvalidFormatException)) {
+            String message = e.getMessage();
+            body.put("message", message.substring(0, message.indexOf(":")));
+            return ResponseEntity.badRequest().body(body);
+        }
 
+        InvalidFormatException ex = (InvalidFormatException) e.getCause();
         String value = ex.getValue().toString();
         String name = ex.getPath().stream()
                 .map(path -> {
@@ -80,7 +88,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             message = String.format("\"%s\" is not a valid value. %s should be a %s", value, name, required);
         }
 
-        Map<String, Object> body = initBadRequestBody();
         body.put("message", message);
         return ResponseEntity.badRequest().body(body);
     }
