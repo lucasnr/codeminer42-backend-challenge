@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
@@ -38,7 +39,8 @@ public class SurvivorController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
-    public ResponseEntity<SurvivorResponseDTO> save(@RequestBody SurvivorRequestDTO survivorDTO, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<SurvivorResponseDTO> save(@RequestBody @Valid SurvivorRequestDTO survivorDTO,
+                                                    UriComponentsBuilder uriBuilder) {
         Survivor survivor = survivorDTO.toModel();
         service.save(survivor);
 

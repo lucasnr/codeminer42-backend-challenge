@@ -4,12 +4,19 @@ import com.codeminer42.trz.models.Survivor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
 public class SurvivorRequestDTO extends SurvivorDTO {
+
+    @NotNull
+    @NotEmpty
+    @Valid
     private Set<InventoryEntryDTO> inventory;
 
     public SurvivorRequestDTO(Survivor survivor) {
