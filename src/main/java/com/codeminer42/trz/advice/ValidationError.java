@@ -10,8 +10,13 @@ public class ValidationError {
     private final String message;
 
     public ValidationError(FieldError fieldError) {
-        this.field = fieldError.getField();
+        this.field = camelCaseToSnakeCase(fieldError.getField());
         this.message = fieldError.getDefaultMessage();
+    }
+
+    private String camelCaseToSnakeCase(String camelCasedString) {
+        return camelCasedString.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2").replaceAll("([a-z])([A-Z])", "$1_$2")
+                .toLowerCase();
     }
 }
 
