@@ -55,6 +55,9 @@ public class SurvivorService {
     }
 
     public void reportAsInfected(Long reportedId, Long reporterId) {
+        if(reportedId.equals(reporterId))
+            throw new BadRequestException("You cannot report yourself as infected");
+
         ReportId id = ReportId.builder()
                 .reportedId(reportedId)
                 .reporterId(reporterId)

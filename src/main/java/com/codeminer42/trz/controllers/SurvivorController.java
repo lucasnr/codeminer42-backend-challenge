@@ -4,7 +4,6 @@ import com.codeminer42.trz.dto.LocationDTO;
 import com.codeminer42.trz.dto.ReportDTO;
 import com.codeminer42.trz.dto.SurvivorRequestDTO;
 import com.codeminer42.trz.dto.SurvivorResponseDTO;
-import com.codeminer42.trz.exceptions.BadRequestException;
 import com.codeminer42.trz.exceptions.NotFoundException;
 import com.codeminer42.trz.models.Survivor;
 import com.codeminer42.trz.services.SurvivorService;
@@ -34,10 +33,7 @@ public class SurvivorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SurvivorResponseDTO> findById(@PathVariable("id") Long id) {
-        Optional<Survivor> optional = service.findById(id);
-        Survivor survivor = optional.orElseThrow(() ->
-                new NotFoundException("No survivor was found with the provided id"));
-
+        Survivor survivor = findByIdOrThrowNotFoundException(id);
         return ResponseEntity.ok(new SurvivorResponseDTO(survivor));
     }
 
@@ -57,8 +53,7 @@ public class SurvivorController {
     @Transactional
     public ResponseEntity<SurvivorResponseDTO> updateLocation(@PathVariable("id") Long id,
                                                               @RequestBody @Valid LocationDTO location) {
-        Survivor survivor = service.findById(id).orElseThrow(() ->
-                        new NotFoundException("No survivor was found with the provided id"));
+        Survivor survivor = findByIdOrThrowNotFoundException(id);
         survivor.setLatitude(location.getLatitude());
         survivor.setLongitude(location.getLongitude());
         return ResponseEntity.ok(new SurvivorResponseDTO(survivor));
@@ -67,17 +62,27 @@ public class SurvivorController {
     @PostMapping(path = "/{id}/report", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ResponseEntity<?> reportAsInfected(@PathVariable("id") Long id, @RequestBody @Valid ReportDTO report) {
-        if(id.equals(report.getReporterId()))
-            throw new BadRequestException("You cannot report yourself as infected");
-
-        if(! service.existsById(id))
-            throw new NotFoundException(String.format("No survivor was found with the id [%d]", id));
+        assertThatExistsByIdOrThrowNotFoundException(id);
 
         Long reporterId = report.getReporterId();
-        if(! service.existsById(reporterId))
-            throw new NotFoundException(String.format("No survivor was found with the id [%d]", reporterId));
+        assertThatExistsByIdOrThrowNotFoundException(reporterId);
 
         service.reportAsInfected(id, reporterId);
         return ResponseEntity.noContent().build();
+    }
+
+    private void assertThatExistsByIdOrThrowNotFoundException(Long id) {
+        if(! service.existsById(id))
+            throw new NotFoundException(notFoundMessage(id));
+    }
+
+    private Survivor findByIdOrThrowNotFoundException(Long id) {
+        Optional<Survivor> optional = service.findById(id);
+        return optional.orElseThrow(() ->
+                new NotFoundException(notFoundMessage(id)));
+    }
+
+    private String notFoundMessage(Long id) {
+        return String.format("No survivor was found with the id [%d]", id);
     }
 }
