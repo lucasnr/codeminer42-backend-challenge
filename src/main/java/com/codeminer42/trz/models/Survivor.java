@@ -1,9 +1,11 @@
 package com.codeminer42.trz.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Column;
@@ -27,6 +29,8 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Survivor implements Serializable {
 
     @Id
@@ -40,23 +44,14 @@ public class Survivor implements Serializable {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Setter
     private Double latitude;
+    @Setter
     private Double longitude;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "survivor_id", insertable = false, updatable = false)
     private Set<InventoryEntry> inventory = new HashSet<>();
-
-    @Builder
-    public Survivor(Long id, String name, Integer age, Gender gender, Double latitude, Double longitude, Set<InventoryEntry> inventory) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.gender = gender;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.inventory = inventory;
-    }
 
     public void addItem(Item item) {
         inventory.forEach(entry -> {

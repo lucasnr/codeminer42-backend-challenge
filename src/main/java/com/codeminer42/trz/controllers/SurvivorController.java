@@ -1,5 +1,6 @@
 package com.codeminer42.trz.controllers;
 
+import com.codeminer42.trz.dto.LocationDTO;
 import com.codeminer42.trz.dto.SurvivorRequestDTO;
 import com.codeminer42.trz.dto.SurvivorResponseDTO;
 import com.codeminer42.trz.exceptions.NotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,5 +49,16 @@ public class SurvivorController {
         URI location = uriBuilder.path("/survivors/{id}")
                 .buildAndExpand(survivor.getId()).toUri();
         return ResponseEntity.created(location).body(new SurvivorResponseDTO(survivor));
+    }
+
+    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ResponseEntity<SurvivorResponseDTO> updateLocation(@PathVariable("id") Long id,
+                                                              @RequestBody @Valid LocationDTO location) {
+        Survivor survivor = service.findById(id).orElseThrow(() ->
+                        new NotFoundException("No survivor was found with the provided id"));
+        survivor.setLatitude(location.getLatitude());
+        survivor.setLongitude(location.getLongitude());
+        return ResponseEntity.ok(new SurvivorResponseDTO(survivor));
     }
 }
