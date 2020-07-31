@@ -33,7 +33,7 @@ public class SurvivorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SurvivorResponseDTO> findById(@PathVariable("id") Long id) {
-        Survivor survivor = findByIdOrThrowNotFoundException(id);
+        Survivor survivor = service.findByIdOrThrowNotFoundException(id);
         return ResponseEntity.ok(new SurvivorResponseDTO(survivor));
     }
 
@@ -53,7 +53,7 @@ public class SurvivorController {
     @Transactional
     public ResponseEntity<SurvivorResponseDTO> updateLocation(@PathVariable("id") Long id,
                                                               @RequestBody @Valid LocationDTO location) {
-        Survivor survivor = findByIdOrThrowNotFoundException(id);
+        Survivor survivor = service.findByIdOrThrowNotFoundException(id);
         survivor.setLatitude(location.getLatitude());
         survivor.setLongitude(location.getLongitude());
         return ResponseEntity.ok(new SurvivorResponseDTO(survivor));
@@ -62,27 +62,13 @@ public class SurvivorController {
     @PostMapping(path = "/{id}/report", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ResponseEntity<?> reportAsInfected(@PathVariable("id") Long id, @RequestBody @Valid ReportDTO report) {
-        assertThatExistsByIdOrThrowNotFoundException(id);
+        service.assertThatExistsByIdOrThrowNotFoundException(id);
 
         Long reporterId = report.getReporterId();
-        assertThatExistsByIdOrThrowNotFoundException(reporterId);
+        service.assertThatExistsByIdOrThrowNotFoundException(reporterId);
 
         service.reportAsInfected(id, reporterId);
         return ResponseEntity.noContent().build();
     }
 
-    private void assertThatExistsByIdOrThrowNotFoundException(Long id) {
-        if(! service.existsById(id))
-            throw new NotFoundException(notFoundMessage(id));
-    }
-
-    private Survivor findByIdOrThrowNotFoundException(Long id) {
-        Optional<Survivor> optional = service.findById(id);
-        return optional.orElseThrow(() ->
-                new NotFoundException(notFoundMessage(id)));
-    }
-
-    private String notFoundMessage(Long id) {
-        return String.format("No survivor was found with the id [%d]", id);
-    }
 }

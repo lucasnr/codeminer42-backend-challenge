@@ -46,14 +46,6 @@ public class SurvivorService {
         inventoryEntryRepository.saveAll(survivor.getInventory());
     }
 
-    public Optional<Survivor> findById(Long id) {
-        return repository.findById(id);
-    }
-
-    public boolean existsById(Long id) {
-        return repository.existsById(id);
-    }
-
     public void reportAsInfected(Long reportedId, Long reporterId) {
         if(reportedId.equals(reporterId))
             throw new BadRequestException("You cannot report yourself as infected");
@@ -68,5 +60,28 @@ public class SurvivorService {
 
         Report report = new Report(id);
         reportRepository.save(report);
+    }
+
+    public Optional<Survivor> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    public void assertThatExistsByIdOrThrowNotFoundException(Long id) {
+        if(! repository.existsById(id))
+            throw new NotFoundException(notFoundMessage(id));
+    }
+
+    public Survivor findByIdOrThrowNotFoundException(Long id) {
+        Optional<Survivor> optional = repository.findById(id);
+        return optional.orElseThrow(() ->
+                new NotFoundException(notFoundMessage(id)));
+    }
+
+    private String notFoundMessage(Long id) {
+        return String.format("No survivor was found with the id [%d]", id);
     }
 }
