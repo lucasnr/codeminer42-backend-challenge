@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "survivor")
@@ -48,6 +49,7 @@ public class Survivor implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "survivor_id", insertable = false, updatable = false)
+    @Setter
     private Set<InventoryEntry> inventory = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER)
@@ -55,7 +57,7 @@ public class Survivor implements Serializable {
     private Set<Report> reports = new HashSet<>();
 
     @Builder
-    public Survivor(Long id, String name, Integer age, Gender gender, Double latitude, Double longitude, Set<InventoryEntry> inventory) {
+    private Survivor(Long id, String name, Integer age, Gender gender, Double latitude, Double longitude, Set<InventoryEntry> inventory) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -66,27 +68,26 @@ public class Survivor implements Serializable {
         this.reports = new HashSet<>();
     }
 
-    public void addItem(Item item) {
-        inventory.forEach(entry -> {
-            if (entry.getItem().getId().equals(item.getId())) {
-                entry.increase();
+    public void addItem(Item item, Integer amount) {
+        for (InventoryEntry entry : inventory) {
+            if (entry.getItem().equals(item)) {
+                entry.increase(amount);
                 return;
             }
-        });
+        }
 
-        inventory.add(InventoryEntry.builder().amount(1).item(item).build());
+        InventoryEntry entry = InventoryEntry.builder().amount(amount).item(item).build();
+        entry.setSurvivorId(this.id);
+        inventory.add(entry);
     }
 
-    public void removeItem(Item item) {
-        inventory.forEach(entry -> {
-            if (entry.getItem().getId().equals(item.getId())) {
-                entry.decrease();
-                if (entry.getAmount() == 0)
-                    inventory.remove(entry);
-
-                return;
+    public void removeItem(Item item, Integer amount) {
+        for (InventoryEntry entry : inventory) {
+            if (entry.getItem().equals(item)) {
+                entry.decrease(amount);
+                break;
             }
-        });
+        }
     }
 
     public boolean isInfected() {

@@ -28,7 +28,7 @@ public class InventoryEntry implements Serializable {
     private InventoryEntryId id;
 
     @Column(columnDefinition = "int2")
-    private Integer amount;
+    @Setter private Integer amount;
 
     @MapsId("itemId")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -40,12 +40,12 @@ public class InventoryEntry implements Serializable {
         this.item = item;
     }
 
-    public void increase() {
-        this.amount += 1;
+    public void increase(Integer amount) {
+        this.setAmount(this.amount + amount);
     }
 
-    public void decrease() {
-        this.amount -= 1;
+    public void decrease(Integer amount) {
+        this.setAmount(this.amount - amount);
     }
 
     public void setSurvivorId(Long survivorId) {
