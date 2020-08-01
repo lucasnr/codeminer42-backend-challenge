@@ -98,6 +98,15 @@ public class SurvivorControllerOnSaveUnitTests {
     }
 
     @Test
+    void whenAcceptIsDefinedButIsNotApplicationSlashJson_thenStatusCodeIsNotAcceptable() throws Exception {
+        mvc.perform(buildRequest()
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_XML)
+                .content(""))
+                .andExpect(status().isNotAcceptable());
+    }
+
+    @Test
     void whenContentIsNotValidSurvivor_thenStatusCodeIsBadRequestAndReturnMissingFields() throws Exception {
         MvcResult result = mvc.perform(buildRequest()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -145,6 +154,7 @@ public class SurvivorControllerOnSaveUnitTests {
         mvc.perform(buildRequest()
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(survivorJson))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.id").value(generatedId))
                 .andExpect(jsonPath("$.name").value(this.survivor.getName()))
