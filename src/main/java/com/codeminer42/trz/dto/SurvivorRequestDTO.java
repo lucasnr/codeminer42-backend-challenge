@@ -3,6 +3,7 @@ package com.codeminer42.trz.dto;
 import com.codeminer42.trz.models.Survivor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class SurvivorRequestDTO extends SurvivorDTO {
 

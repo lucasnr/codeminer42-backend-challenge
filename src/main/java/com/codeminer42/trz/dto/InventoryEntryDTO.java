@@ -3,6 +3,8 @@ package com.codeminer42.trz.dto;
 import com.codeminer42.trz.models.InventoryEntry;
 import com.codeminer42.trz.models.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +15,8 @@ import javax.validation.constraints.Positive;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class InventoryEntryDTO {
 
     @JsonProperty(value = "item_id")
