@@ -1,8 +1,7 @@
 package com.codeminer42.trz.dto;
 
-import com.codeminer42.trz.models.Survivor.Gender;
 import com.codeminer42.trz.models.Survivor;
-import lombok.Builder;
+import com.codeminer42.trz.models.Survivor.Gender;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

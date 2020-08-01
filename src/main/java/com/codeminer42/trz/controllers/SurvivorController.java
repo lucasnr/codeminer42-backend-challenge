@@ -4,7 +4,6 @@ import com.codeminer42.trz.dto.LocationDTO;
 import com.codeminer42.trz.dto.ReportDTO;
 import com.codeminer42.trz.dto.SurvivorRequestDTO;
 import com.codeminer42.trz.dto.SurvivorResponseDTO;
-import com.codeminer42.trz.exceptions.NotFoundException;
 import com.codeminer42.trz.models.Survivor;
 import com.codeminer42.trz.services.SurvivorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/survivors", produces = MediaType.APPLICATION_JSON_VALUE)
