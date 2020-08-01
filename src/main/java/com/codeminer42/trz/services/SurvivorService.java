@@ -10,6 +10,7 @@ import com.codeminer42.trz.repositories.InventoryEntryRepository;
 import com.codeminer42.trz.repositories.ItemRepository;
 import com.codeminer42.trz.repositories.ReportRepository;
 import com.codeminer42.trz.repositories.SurvivorRepository;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class SurvivorService {
 
     @Autowired
+    @Setter
     private SurvivorRepository repository;
 
     @Autowired

@@ -54,6 +54,7 @@ public class Survivor implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "reported_id", insertable = false, updatable = false)
+    @Setter
     private Set<Report> reports = new HashSet<>();
 
     @Builder
