@@ -9,6 +9,7 @@ import com.codeminer42.trz.models.Item;
 import com.codeminer42.trz.models.Survivor;
 import com.codeminer42.trz.repositories.InventoryEntryRepository;
 import com.codeminer42.trz.repositories.ItemRepository;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class TradeService {
 
     @Autowired
+    @Setter
     private ItemRepository itemRepository;
 
     @Autowired
@@ -42,7 +44,7 @@ public class TradeService {
         updateSurvivorInventory(rightSurvivor);
     }
 
-    private void updateSurvivorInventory(Survivor survivor) {
+    public void updateSurvivorInventory(Survivor survivor) {
         inventoryEntryRepository.saveAll(survivor.getInventory());
 
         List<List<InventoryEntry>> values = new ArrayList<>(
@@ -57,7 +59,7 @@ public class TradeService {
         inventoryEntryRepository.deleteAll(lesserThanOrEqualZeroAmountEntries);
     }
 
-    private void swapItems(Set<ProposalEntryDTO> items, Survivor from, Survivor to) {
+    public void swapItems(Set<ProposalEntryDTO> items, Survivor from, Survivor to) {
         items.forEach(proposal -> {
             Item item = proposal.getItem();
             Integer amount = proposal.getAmount();
@@ -67,7 +69,7 @@ public class TradeService {
         });
     }
 
-    private void checkSurvivorInventory(Survivor survivor, Set<ProposalEntryDTO> items) {
+    public void checkSurvivorInventory(Survivor survivor, Set<ProposalEntryDTO> items) {
         items.forEach(entry -> {
             Item item = itemRepository.findById(entry.getItemId())
                     .orElseThrow(() -> new NotFoundException(
@@ -87,7 +89,10 @@ public class TradeService {
         });
     }
 
-    private void assertThatSurvivorsCanTrade(Survivor survivor, Survivor otherSurvivor) {
+    public void assertThatSurvivorsCanTrade(Survivor survivor, Survivor otherSurvivor) {
+        if (survivor.getId().equals(otherSurvivor.getId()))
+            throw new BadRequestException("A survivor cannot trade items with himself");
+
         if (survivor.isInfected())
             throw new BadRequestException(String.format("The survivor %s of id %d cannot trade because is infected",
                     survivor.getName(), survivor.getId()));
@@ -95,12 +100,9 @@ public class TradeService {
         if (otherSurvivor.isInfected())
             throw new BadRequestException(String.format("The survivor %s of id %d cannot trade because is infected",
                     otherSurvivor.getName(), otherSurvivor.getId()));
-
-        if (survivor.getId().equals(otherSurvivor.getId()))
-            throw new BadRequestException("A survivor cannot trade items with himself");
     }
 
-    private void assertThatBothSidesEqualsTheSameAmountOfPoints(TradeSideDTO left, TradeSideDTO right) {
+    public void assertThatBothSidesEqualsTheSameAmountOfPoints(TradeSideDTO left, TradeSideDTO right) {
         Integer leftPoints = left.getItems().stream()
                 .map(entry -> entry.getAmount() * entry.getItem().getPoints())
                 .reduce(0, (accumulator, value) -> accumulator + value);

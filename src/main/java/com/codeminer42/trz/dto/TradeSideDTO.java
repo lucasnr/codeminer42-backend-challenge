@@ -1,6 +1,8 @@
 package com.codeminer42.trz.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +15,8 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TradeSideDTO {
     @JsonProperty(value = "survivor_id")
     @NotNull
