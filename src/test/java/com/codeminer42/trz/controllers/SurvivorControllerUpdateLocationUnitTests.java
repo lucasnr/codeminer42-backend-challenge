@@ -20,7 +20,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -112,8 +113,10 @@ public class SurvivorControllerUpdateLocationUnitTests {
     void whenContentIsMissingFields_thenStatusCodeIsBadRequest() throws Exception {
         mvc.perform(buildRequest()
                 .content("{}"))
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains("latitude")))
-                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains("longitude")));
+                .andExpect(result ->
+                        assertThat(result.getResponse().getContentAsString(), containsString("latitude")))
+                .andExpect(result ->
+                        assertThat(result.getResponse().getContentAsString(), containsString("longitude")));
     }
 
     @Test

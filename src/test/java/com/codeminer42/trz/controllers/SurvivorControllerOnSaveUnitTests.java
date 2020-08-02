@@ -21,7 +21,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -119,7 +120,7 @@ public class SurvivorControllerOnSaveUnitTests {
 
         String[] missingFields = {"name", "age", "gender", "location", "inventory"};
         for (String missingField : missingFields)
-            assertTrue(result.getResponse().getContentAsString().contains(missingField));
+            assertThat(result.getResponse().getContentAsString(), containsString(missingField));
     }
 
     @Test
