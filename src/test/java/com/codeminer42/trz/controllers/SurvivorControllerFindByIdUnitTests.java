@@ -46,12 +46,11 @@ public class SurvivorControllerFindByIdUnitTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Long survivorId;
     private Survivor survivor;
 
     @BeforeAll
     void setUp() {
-        this.survivorId = 1L;
+        Long survivorId = 1L;
         InventoryEntry entry = InventoryEntry.builder()
                 .amount(4)
                 .item(Item.builder().id(1L).name("Fiji Water").points(10).build())
@@ -76,12 +75,12 @@ public class SurvivorControllerFindByIdUnitTests {
 
     @BeforeEach
     void onStart() {
-        when(service.findByIdOrThrowNotFoundException(this.survivorId)).thenReturn(this.survivor);
+        when(service.findByIdOrThrowNotFoundException(survivor.getId())).thenReturn(survivor);
     }
 
     @Test
     void whenAcceptIsDefinedButIsNotApplicationSlashJson_thenStatusCodeIsNotAcceptable() throws Exception {
-        mvc.perform(get("/survivors/" + this.survivorId)
+        mvc.perform(get("/survivors/" + survivor.getId())
                 .accept(MediaType.APPLICATION_XML))
                 .andExpect(status().isNotAcceptable());
     }
@@ -94,26 +93,26 @@ public class SurvivorControllerFindByIdUnitTests {
 
     @Test
     void whenIdExists_thenStatusCodeIsOk() throws Exception {
-        mvc.perform(get("/survivors/" + this.survivorId))
+        mvc.perform(get("/survivors/" + survivor.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
     void whenIdExists_thenContentTypeIsApplicationSlashJson() throws Exception {
-        mvc.perform(get("/survivors/" + this.survivorId))
+        mvc.perform(get("/survivors/" + survivor.getId()))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     void whenIdExists_thenResponseBodyIsFoundSurvivor() throws Exception {
         String expectedJson = objectMapper.writeValueAsString(new SurvivorResponseDTO(this.survivor));
-        mvc.perform(get("/survivors/" + this.survivorId))
+        mvc.perform(get("/survivors/" + survivor.getId()))
                 .andExpect(content().json(expectedJson));
     }
 
     @Test
     void whenIdDoesNotExists_thenStatusCodeIsNotFound() throws Exception {
-        Long nonexistentId = this.survivorId + 1;
+        Long nonexistentId = survivor.getId() + 1;
 
         when(repository.findById(nonexistentId)).thenReturn(Optional.empty());
         when(service.findByIdOrThrowNotFoundException(nonexistentId)).thenCallRealMethod();
@@ -124,7 +123,7 @@ public class SurvivorControllerFindByIdUnitTests {
 
     @Test
     void whenIdDoesNotExists_thenThrowsNotFoundException() throws Exception {
-        Long nonexistentId = this.survivorId + 1;
+        Long nonexistentId = survivor.getId() + 1;
 
         when(repository.findById(nonexistentId)).thenReturn(Optional.empty());
         when(service.findByIdOrThrowNotFoundException(nonexistentId)).thenCallRealMethod();

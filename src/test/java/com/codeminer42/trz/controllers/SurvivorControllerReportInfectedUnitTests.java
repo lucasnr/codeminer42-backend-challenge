@@ -55,12 +55,11 @@ public class SurvivorControllerReportInfectedUnitTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Long survivorId;
     private Survivor survivor;
 
     @BeforeAll
     void setUp() {
-        this.survivorId = 1L;
+        Long survivorId = 1L;
         InventoryEntry entry = InventoryEntry.builder()
                 .amount(4)
                 .item(Item.builder().id(1L).name("Fiji Water").points(10).build())
@@ -90,11 +89,11 @@ public class SurvivorControllerReportInfectedUnitTests {
 
     @BeforeEach
     void onStart() {
-        when(service.findByIdOrThrowNotFoundException(survivorId)).thenReturn(survivor);
+        when(service.findByIdOrThrowNotFoundException(survivor.getId())).thenReturn(survivor);
     }
 
     private MockHttpServletRequestBuilder buildRequest() {
-        return post(String.format("/survivors/%d/report", survivorId))
+        return post(String.format("/survivors/%d/report", survivor.getId()))
                 .contentType(MediaType.APPLICATION_JSON);
     }
 
@@ -102,7 +101,7 @@ public class SurvivorControllerReportInfectedUnitTests {
     @Order(1)
     void whenSurvivorHasLassThanFiveReports_thenInfectedIsFalse() throws Exception {
         assertThat(survivor.getReports().size(), is(lessThan(5)));
-        mvc.perform(get("/survivors/" + survivorId))
+        mvc.perform(get("/survivors/" + survivor.getId()))
                 .andExpect(jsonPath("$.infected").value(false));
     }
 
@@ -139,7 +138,7 @@ public class SurvivorControllerReportInfectedUnitTests {
     @Test
     void whenReporterIsReported_thenStatusIsBadRequest() throws Exception {
         ReportDTO report = new ReportDTO();
-        report.setReporterId(survivorId);
+        report.setReporterId(survivor.getId());
         String reportJson = objectMapper.writeValueAsString(report);
 
         doCallRealMethod().when(service).reportAsInfected(any(), any());
@@ -158,10 +157,10 @@ public class SurvivorControllerReportInfectedUnitTests {
         String reportJson = objectMapper.writeValueAsString(reportDTO);
 
         doAnswer(invocation -> {
-            Report report = new Report(new ReportId(survivorId, reporterId));
+            Report report = new Report(new ReportId(survivor.getId(), reporterId));
             survivor.getReports().add(report);
             return null;
-        }).when(service).reportAsInfected(survivorId, reporterId);
+        }).when(service).reportAsInfected(survivor.getId(), reporterId);
 
         Integer size = survivor.getReports().size();
 
@@ -176,7 +175,7 @@ public class SurvivorControllerReportInfectedUnitTests {
     @Order(3)
     void whenSurvivorHasFiveOrMoreReports_thenInfectedIsTrue() throws Exception {
         assertThat(survivor.getReports().size(), is(greaterThanOrEqualTo(5)));
-        mvc.perform(get("/survivors/" + survivorId))
+        mvc.perform(get("/survivors/" + survivor.getId()))
                 .andExpect(jsonPath("$.infected").value(true));
     }
 }

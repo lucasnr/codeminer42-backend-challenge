@@ -41,13 +41,12 @@ public class SurvivorControllerUpdateLocationUnitTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Long survivorId;
     private Survivor survivor;
     private LocationDTO location;
 
     @BeforeAll
     void setUp() {
-        this.survivorId = 1L;
+        Long survivorId = 1L;
         InventoryEntry entry = InventoryEntry.builder()
                 .amount(4)
                 .item(Item.builder().id(1L).name("Fiji Water").points(10).build())
@@ -74,11 +73,11 @@ public class SurvivorControllerUpdateLocationUnitTests {
 
     @BeforeEach
     void onStart() {
-        when(service.findByIdOrThrowNotFoundException(this.survivorId)).thenReturn(this.survivor);
+        when(service.findByIdOrThrowNotFoundException(survivor.getId())).thenReturn(this.survivor);
     }
 
     private MockHttpServletRequestBuilder buildRequest() {
-        return put("/survivors/" + this.survivorId)
+        return put("/survivors/" + survivor.getId())
                 .contentType(MediaType.APPLICATION_JSON);
     }
 
