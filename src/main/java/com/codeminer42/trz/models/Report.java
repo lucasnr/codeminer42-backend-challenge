@@ -1,10 +1,8 @@
 package com.codeminer42.trz.models;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -13,11 +11,9 @@ import java.io.Serializable;
 
 @Entity
 @Table(name= "report")
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class Report implements Serializable {
     @EmbeddedId
     private ReportId id;
