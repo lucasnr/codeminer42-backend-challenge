@@ -49,7 +49,7 @@ public class SurvivorService {
     }
 
     public void reportAsInfected(Long reportedId, Long reporterId) {
-        if(reportedId.equals(reporterId))
+        if (reportedId.equals(reporterId))
             throw new BadRequestException("You cannot report yourself as infected");
 
         ReportId id = ReportId.builder()
@@ -73,7 +73,7 @@ public class SurvivorService {
     }
 
     public void assertThatExistsByIdOrThrowNotFoundException(Long id) {
-        if(! repository.existsById(id))
+        if (!repository.existsById(id))
             throw new NotFoundException(notFoundMessage(id));
     }
 
@@ -81,6 +81,16 @@ public class SurvivorService {
         Optional<Survivor> optional = repository.findById(id);
         return optional.orElseThrow(() ->
                 new NotFoundException(notFoundMessage(id)));
+    }
+
+    public Double getPercentageOfInfected() {
+        long numberOfInfected = repository.countInfected();
+        long total = repository.count();
+
+        if(total == 0)
+            return 0.0;
+
+        return (double) numberOfInfected / (double) total;
     }
 
     private String notFoundMessage(Long id) {
