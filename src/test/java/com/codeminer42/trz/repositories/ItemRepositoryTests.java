@@ -1,10 +1,9 @@
 package com.codeminer42.trz.repositories;
 
-import com.codeminer42.trz.TheResidentZombieApplication;
 import com.codeminer42.trz.models.Item;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -13,7 +12,7 @@ import java.util.stream.Stream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@SpringBootTest(classes = {TheResidentZombieApplication.class})
+@DataJpaTest
 @ActiveProfiles("test")
 public class ItemRepositoryTests {
 
