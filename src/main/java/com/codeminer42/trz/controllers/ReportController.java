@@ -34,4 +34,16 @@ public class ReportController {
         ReportInfoDTO<Double> report = new ReportInfoDTO<>("Percentage of infected survivors", percentage);
         return ResponseEntity.ok(report);
     }
+
+    @Operation(summary = "Report the percentage of non-infected survivors")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully calculated percentage of non-infected survivors",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ReportInfoDTO.class))})})
+    @GetMapping("/non-infected")
+    public ResponseEntity<ReportInfoDTO<Double>> percentageOfNonInfectedSurvivors() {
+        Double percentage = service.getPercentageOfNonInfected();
+        ReportInfoDTO<Double> report = new ReportInfoDTO<>("Percentage of non-infected survivors", percentage);
+        return ResponseEntity.ok(report);
+    }
 }

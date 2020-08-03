@@ -84,7 +84,15 @@ public class SurvivorService {
     }
 
     public Double getPercentageOfInfected() {
-        long numberOfInfected = repository.countInfected();
+        return getPercentage(true);
+    }
+
+    public Double getPercentageOfNonInfected() {
+        return getPercentage(false);
+    }
+
+    private Double getPercentage(boolean infected) {
+        long numberOfInfected = infected ? repository.countInfected() : repository.countNonInfected();
         long total = repository.count();
 
         if(total == 0)
@@ -96,4 +104,5 @@ public class SurvivorService {
     private String notFoundMessage(Long id) {
         return String.format("No survivor was found with the id [%d]", id);
     }
+
 }

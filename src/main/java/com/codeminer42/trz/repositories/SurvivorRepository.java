@@ -8,4 +8,7 @@ public interface SurvivorRepository extends JpaRepository<Survivor, Long> {
 
     @Query("select count(distinct s) from Survivor s join s.reports r where r.size >= 5")
     public long countInfected();
+
+    @Query("select count(distinct s) from Survivor s left join s.reports r where r.size < 5")
+    public long countNonInfected();
 }
