@@ -1,5 +1,6 @@
 drop table if exists inventory_entry;
 drop table if exists item;
+drop table if exists report;
 drop table if exists survivor;
 
 drop type if exists gender;
