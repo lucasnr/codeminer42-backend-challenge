@@ -18,8 +18,7 @@ import java.util.Locale;
 @OpenAPIDefinition(info = @Info(
         title = "The Resident Zombie Backend API",
         description = "A RESTful API for survivors of an apocalyptic virus. Join the fight against the T-Virus!",
-        contact = @Contact(name = "Lucas Nascimento", url = "https://lucasnr.github.io",
-                email = "lucasnascimentoribeiro13@gmail.com"),
+        contact = @Contact(name = "Lucas Nascimento", url = "https://lucasnr.github.io", email = "lucasnascimentoribeiro13@gmail.com"),
         version = "0.1.0",
         license = @License(name = "MIT", url = "https://opensource.org/licenses/MIT")
 ))
