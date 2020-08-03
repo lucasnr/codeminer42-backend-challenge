@@ -16,8 +16,6 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class SurvivorDTO {
 
-    protected Long id;
-
     @NotNull
     @Size(min = 3, max = 50)
     protected String name;
@@ -36,7 +34,6 @@ public class SurvivorDTO {
     protected LocationDTO location;
 
     public SurvivorDTO(Survivor survivor) {
-        this.id = survivor.getId();
         this.name = survivor.getName();
         this.age = survivor.getAge();
         this.gender = survivor.getGender();

@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 public class SurvivorResponseDTO extends SurvivorDTO {
     private final Set<InventoryEntryDetailedDTO> inventory;
     private final boolean infected;
+    private final Long id;
 
     public SurvivorResponseDTO(Survivor survivor) {
         super(survivor);
 
+        this.id = survivor.getId();
         this.inventory = survivor.getInventory()
                 .stream()
                 .map(InventoryEntryDetailedDTO::new)
