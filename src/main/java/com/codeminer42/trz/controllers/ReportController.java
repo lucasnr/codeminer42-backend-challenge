@@ -1,6 +1,8 @@
 package com.codeminer42.trz.controllers;
 
+import com.codeminer42.trz.dto.ItemAmountPairDTO;
 import com.codeminer42.trz.dto.ReportInfoDTO;
+import com.codeminer42.trz.services.ItemService;
 import com.codeminer42.trz.services.SurvivorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping(path = "/reports", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "reports", description = "Operations for reports of the current data in the api")
@@ -22,6 +26,9 @@ public class ReportController {
 
     @Autowired
     private SurvivorService service;
+
+    @Autowired
+    private ItemService itemService;
 
     @Operation(summary = "Report the percentage of infected survivors")
     @ApiResponses(value = {
@@ -57,5 +64,16 @@ public class ReportController {
         Integer points = service.getPointsLost();
         ReportInfoDTO<Integer> report = new ReportInfoDTO<>("Points lost due to infected survivors", points);
         return ResponseEntity.ok(report);
+    }
+
+    @Operation(summary = "Report the amount of items per survivors")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully calculated the amount items",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ReportInfoDTO.class))})})
+    @GetMapping("/items-per-survivor")
+    public ResponseEntity<ReportInfoDTO<Set<String>>> itemsPerSurvivor() {
+        Set<ItemAmountPairDTO> amountsPerSurvivor  = itemService.getTotalAmountsPerSurvivor();
+        return ResponseEntity.ok(new ReportInfoDTO("Total item amounts per survivor", amountsPerSurvivor));
     }
 }
