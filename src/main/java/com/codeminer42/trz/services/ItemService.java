@@ -25,7 +25,7 @@ public class ItemService {
                 .map(item -> {
                     Double totalPerSurvivor;
                     if (survivorsCount == 0.0) totalPerSurvivor = 0.0;
-                    else totalPerSurvivor = repository.countAmountById(item.getId()) / survivorsCount;
+                    else totalPerSurvivor = repository.countAmountById(item.getId()).orElse(0) / survivorsCount;
 
                     return ItemAmountPairDTO.builder()
                             .name(item.getName())

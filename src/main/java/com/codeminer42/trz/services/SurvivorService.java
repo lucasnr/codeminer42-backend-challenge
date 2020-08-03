@@ -92,11 +92,12 @@ public class SurvivorService {
     }
 
     public Integer getPointsLost() {
-        return repository.countPointsLost();
+        return repository.countPointsLost().orElse(0);
     }
 
     private Double getPercentage(boolean infected) {
-        long numberOfInfected = infected ? repository.countInfected() : repository.countNonInfected();
+        Integer numberOfInfected = infected ?
+                repository.countInfected().orElse(0) : repository.countNonInfected().orElse(0);
         long total = repository.count();
 
         if(total == 0)
